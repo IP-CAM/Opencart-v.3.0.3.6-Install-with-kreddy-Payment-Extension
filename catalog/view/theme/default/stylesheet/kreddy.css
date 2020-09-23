@@ -1,0 +1,161 @@
+#kreddycustomwrap * {
+    font-family: 'Rubik', sans-serif;
+    font-weight: 400;
+}
+#kreddycustomwrap .slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 1;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+#kreddycustomwrap .slider:hover {
+    opacity: 1;
+}
+
+#kreddycustomwrap .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 30px;
+    height: 30px;
+    margin-top: -10px;
+    border-radius: 50%;
+    background: white !important;
+    border-color: #32c8a0;
+    cursor: pointer;
+}
+
+#kreddycustomwrap .slider::-moz-range-thumb {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: white !important;
+    border-color: #32c8a0;
+    cursor: pointer;
+}
+
+div#kreddycalculator h2 {
+    color: white;
+}
+
+div#kreddycalculator {
+    background-color: #0f3c64;
+    color: white;
+    border-radius: 20px;
+    padding: 70px 35px;
+
+    width: 50%;
+}
+
+#kreddycalculator a {
+    color: #32c8a0;
+}
+
+#kreddycalculator input[type="submit"] {
+    background-color: #32c8a0;
+}
+
+#kreddycalculator input[type="submit"]:hover {
+    background-color: #14b187;
+}
+
+div#kreddycalculatorresults {
+    border: 13px solid #0e3c64;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-left: none;
+    padding: 20px 20px;
+    /* margin-left: -3px; */
+
+    width: 50%;
+}
+
+#kreddycalculatorresults ul {
+    padding: 0;
+    margin-left: 20px;
+    margin-bottom: 0;
+    list-style: none;
+}
+
+#kreddycalculatorresults ul li:not(:last-child) {
+    border-bottom: 1px dotted gray;
+}
+
+#kreddycalculatorresults ul li {
+    padding: 5px 0;
+}
+
+#kreddycalculatorresults ul li span {
+    float: right;
+    font-weight: 700;
+}
+
+div#kreddycustomwrap form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+div#kreddycustomwrap h2 span {
+    font-size: 27px;
+    font-weight: 500;
+    float: right;
+    margin-top: -10px;
+}
+
+#kreddycustomwrap h2 {
+    font-size: 17px;
+    font-weight: 400 !important;
+}
+
+.header-loan-amount {
+    margin-bottom: 25px;
+}
+
+.slidecontainer.body-loan-range-slider {
+    margin-bottom: 25px;
+    margin-top: 10px;
+}
+
+.kreddy-submit {
+    margin-top: 14px;
+}
+
+.kreddy-submit input {
+    border-radius: 5px;
+    width: 100%;
+}
+
+div#kreddycalculator h2 {
+    color: white;
+    border-bottom: 1px dotted white;
+}
+
+.txtinput input {
+    width: 100%;
+}
+
+input[type="text"] {
+    border-radius: 6px !important;
+}
+
+.body-input-personal-id-document-no {
+    display: flex;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.body-input-personal-id-document-no input {
+    flex-grow: 1;
+    margin-left: 8px;
+}
+
+input.hidden {
+    display: none !important;
+}
