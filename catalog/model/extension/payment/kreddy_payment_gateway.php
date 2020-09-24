@@ -1,37 +1,34 @@
 <?php
-class ModelExtensionPaymentKreddyPaymentGateway extends Model {
-	
+class ModelExtensionPaymentKreddyPaymentGateway extends Model 
+{
     public function getMethod($address, $total) {
 		$this->load->language('extension/payment/kreddy_payment_gateway');
 		$this->load->model('checkout/order');
-
-		$order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
-
-		$total = trim($this->currency->format($order_info['total'], $this->config->get('config_currency')), ',денари');
-		
-		if(preg_match("/^[0-9,]+$/", $total)) {
-			$total = str_replace(',', '', $total);
-		} 
-
 		$status = false;
+	
+		if (isset($total) && $total) {
+			$cartPrice = trim($this->currency->format($total, $this->config->get('config_currency')), ',денари');
+		
+			$cartPrice = str_replace(',', '', $cartPrice);
+		}
 
-		if ($total >= 3000 && $total <= 120000) {
+		if ($cartPrice >= 3000 && $cartPrice <= 120000) {
 			$status = true;
 		} 
 
-		$method_data = array();
+		$data = array();
 		
 		if ($status) {
-			$method_data = array(
+			$data = array(
 				'code'       => 'kreddy_payment_gateway',
 				'title'      => $this->language->get('text_title'),
 				'terms'      => '',
 				'sort_order' => $this->config->get('payment_kreddy_payment_gateway_sort_order'),
-				'total' => $total
+				'total' => $cartPrice
 			);
 		}
 
-		return $method_data;
+		return $data;
 	}
 
 	public function mapCurrency($code) {

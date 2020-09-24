@@ -1,9 +1,6 @@
 <?php
 class ControllerExtensionPaymentKreddyPaymentGateway extends Controller
 {
-    private $authUsername = 'WebsiteUserRiversoft';
-    private $authPassword = 'Dssd\'tVtd#5g6';
-
     public function index() {
         $this->load->model('checkout/order');
 
@@ -64,8 +61,8 @@ class ControllerExtensionPaymentKreddyPaymentGateway extends Controller
             'Content-Type: application/json'
         ];
         $body = [
-            'UserName' => $this->authUsername,
-            'UserPassword' => $this->authPassword
+            'UserName' => 'WebsiteUserRiversoft',
+            'UserPassword' => 'Dssd\'tVtd#5g6'
         ];
 
         $curl = curl_init($url);
@@ -76,6 +73,7 @@ class ControllerExtensionPaymentKreddyPaymentGateway extends Controller
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_HEADER, true);
+        curl_setopt($curl, CURLOPT_VERBOSE, true);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
         $result = curl_exec($curl);
@@ -96,9 +94,11 @@ class ControllerExtensionPaymentKreddyPaymentGateway extends Controller
     public function offerInfo($cookies)
     {
         $url = 'https://88.85.110.253/0/rest/FinstarOffersAPI/offers';
+
         $headers = [
             'Content-Type: application/json'
         ];
+
         $body = [
             'getRelatedOffersListRequest' => [
                 'APIKey' => null,
@@ -115,8 +115,7 @@ class ControllerExtensionPaymentKreddyPaymentGateway extends Controller
         foreach ($cookies as $cookie) {
             $cookieString .= array_keys($cookie)[0] . "=" . rawurlencode(array_values($cookie)[0]) . '; ';
         }
-        print_r($cookieString);
-        die();
+    
         $curl = curl_init($url);
 
         curl_setopt($curl, CURLOPT_POST, true);
@@ -125,6 +124,7 @@ class ControllerExtensionPaymentKreddyPaymentGateway extends Controller
         curl_setopt($curl, CURLOPT_COOKIE, $cookieString);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_VERBOSE, true);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
         $result = curl_exec($curl);

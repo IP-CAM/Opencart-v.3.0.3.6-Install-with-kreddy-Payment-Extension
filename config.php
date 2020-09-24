@@ -1,9 +1,9 @@
 <?php
 // HTTP
-define('HTTP_SERVER', 'http://localhost:8001/');
+define('HTTP_SERVER', 'http://localhost:8003/');
 
 // HTTPS
-define('HTTPS_SERVER', 'http://localhost:8001/');
+define('HTTPS_SERVER', 'http://localhost:8003/');
 
 // DIR
 define('DIR_APPLICATION', '/var/www/html/OpenCart/catalog/');
