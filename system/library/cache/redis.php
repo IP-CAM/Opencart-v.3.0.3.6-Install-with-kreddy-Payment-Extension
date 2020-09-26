@@ -19,7 +19,7 @@ class Redis {
     public function set($key,$value) {
         $status = $this->cache->set(CACHE_PREFIX . $key, json_encode($value));
         if($status){
-            $this->cache->setTimeout(CACHE_PREFIX . $key, $this->expire);
+            $this->cache->expire(CACHE_PREFIX . $key, $this->expire);
         }
         return $status;
     }

@@ -1,11 +1,11 @@
 <?php
 // HTTP
-define('HTTP_SERVER', 'http://localhost:8003/admin/');
-define('HTTP_CATALOG', 'http://localhost:8003/');
+define('HTTP_SERVER', 'http://localhost:8002/admin/');
+define('HTTP_CATALOG', 'http://localhost:8002/');
 
 // HTTPS
-define('HTTPS_SERVER', 'http://localhost:8003/admin/');
-define('HTTPS_CATALOG', 'http://localhost:8003/');
+define('HTTPS_SERVER', 'http://localhost:8002/admin/');
+define('HTTPS_CATALOG', 'http://localhost:8002/');
 
 // DIR
 define('DIR_APPLICATION', '/var/www/html/OpenCart/admin/');
@@ -34,3 +34,8 @@ define('DB_PREFIX', 'oc_');
 
 // OpenCart API
 define('OPENCART_SERVER', 'https://www.opencart.com/');
+
+//CACHE
+define('CACHE_HOSTNAME', 'localhost');
+define('CACHE_PORT', '6379');
+define('CACHE_PREFIX', 'redis_');

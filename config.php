@@ -1,9 +1,9 @@
 <?php
 // HTTP
-define('HTTP_SERVER', 'http://localhost:8003/');
+define('HTTP_SERVER', 'http://localhost:8002/');
 
 // HTTPS
-define('HTTPS_SERVER', 'http://localhost:8003/');
+define('HTTPS_SERVER', 'http://localhost:8002/');
 
 // DIR
 define('DIR_APPLICATION', '/var/www/html/OpenCart/catalog/');
@@ -28,3 +28,8 @@ define('DB_PASSWORD', 'root');
 define('DB_DATABASE', 'opencart');
 define('DB_PORT', '3306');
 define('DB_PREFIX', 'oc_');
+
+//CACHE
+define('CACHE_HOSTNAME', 'localhost');
+define('CACHE_PORT', '6379');
+define('CACHE_PREFIX', 'redis_');
