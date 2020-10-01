@@ -12,7 +12,7 @@ class ModelExtensionPaymentKreddyPaymentGateway extends Model
 			$cartPrice = str_replace(',', '', $cartPrice);
 		}
 
-		if ($cartPrice >= 3000 && $cartPrice <= 120000) {
+		if ($cartPrice >= 3000 && $cartPrice <= 180000) {
 			$status = true;
 		} 
 

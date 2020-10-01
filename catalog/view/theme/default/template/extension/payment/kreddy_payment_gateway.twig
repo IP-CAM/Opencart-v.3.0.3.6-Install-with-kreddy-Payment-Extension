@@ -1,5 +1,5 @@
-<form action="https://kupisega.mk/?wc-api=WC_Gateway_Kreddy" method="post">
-    <h3>{{ heading_title }}</h3>
+<form action="" method="post">
+    <h3>Апликација за плаќање на 3-36 рати со Креди</h3>
     <div id="kreddycalculator">
         <div class="header-loan-amount">
             <h2>Износ на кошничка: <span>{{ total }}</span></h2>
@@ -8,7 +8,7 @@
             <h2>Изберете период на отплата <span><strong id="installments-number">3</strong> месеци</span></h2>
         </div>
         <div class="slidecontainer body-loan-range-slider">
-            <input type="range" name="installments" min="3" max="24" value="10" class="slider" id="myRange">
+            <input type="range" name="installments" min="3" max="36" value="12" class="slider" id="myRange">
         </div>
         <div class="body-input-embg txtinput">
             <input type="text" name="clientEmbg" id="clientEMBGinput" placeholder="Внесете го вашиот ЕМБГ">
@@ -22,37 +22,17 @@
         </div>
         <input id="agreement-check" type="checkbox" name="kreddy-agreement"> Се согласувам со <a href="https://kupisega.mk/wp-content/plugins/kreddypaymentgateway/assets/PersonalDataDeclarationMK.pdf" target="_blank">условите</a>
 
-        {# FOREACH #}
-        <input id="step3data" type="text" name="step3" class="hidden" value="" hidden="">
-        <input id="step4data" type="text" name="step4" class="hidden" value="" hidden="">
-        <input id="step5data" type="text" name="step5" class="hidden" value="" hidden="">
-        <input id="step6data" type="text" name="step6" class="hidden" value="" hidden="">
-        <input id="step7data" type="text" name="step7" class="hidden" value="" hidden="">
-        <input id="step8data" type="text" name="step8" class="hidden" value="" hidden="">
-        <input id="step9data" type="text" name="step9" class="hidden" value="" hidden="">
-        <input id="step10data" type="text" name="step10" class="hidden" value="" hidden="">
-        <input id="step11data" type="text" name="step11" class="hidden" value="" hidden="">
-        <input id="step12data" type="text" name="step12" class="hidden" value="" hidden="">
-        <input id="step13data" type="text" name="step13" class="hidden" value="" hidden="">
-        <input id="step14data" type="text" name="step14" class="hidden" value="" hidden="">
-        <input id="step15data" type="text" name="step15" class="hidden" value="" hidden="">
-        <input id="step16data" type="text" name="step16" class="hidden" value="" hidden="">
-        <input id="step17data" type="text" name="step17" class="hidden" value="" hidden="">
-        <input id="step18data" type="text" name="step18" class="hidden" value="" hidden="">
-        <input id="step19data" type="text" name="step19" class="hidden" value="" hidden="">
-        <input id="step20data" type="text" name="step20" class="hidden" value="" hidden="">
-        <input id="step21data" type="text" name="step21" class="hidden" value="" hidden="">
-        <input id="step22data" type="text" name="step22" class="hidden" value="" hidden="">
-        <input id="step23data" type="text" name="step23" class="hidden" value="" hidden="">
-        <input id="step24data" type="text" name="step24" class="hidden" value="" hidden="">
+        {% for rate in installments %}
+            <input id='step{{ loop.index + 2 }}data' type='text' name='step{{ loop.index + 2 }}' class="hidden" value='{{ rate|json_encode() }}' hidden>
+        {% endfor %}
 
         <!-- order info fields -->
-        <input type="text" name="kreddyOrderNumber" class="hidden" value="8293" hidden="">
+        <input type="text" name="kreddyOrderNumber" class="hidden" value="{{ order.order_id }}" hidden="">
         <input type="text" name="KreddyApplicationStatus" class="hidden" value="1" hidden="">
-        <input type="text" name="clientFirstName" id="clientFirstName" class="hidden" value="Test" hidden="">
-        <input type="text" name="clientLastName" id="clientLastName" class="hidden" value="Testerski" hidden="">
-        <input type="text" name="clientTelephone" id="clientTelephone" class="hidden" value="077777555" hidden="">
-        <input type="text" name="clientEmail" id="clientEmail" class="hidden" value="email@gmail.com" hidden="">
+        <input type="text" name="clientFirstName" id="clientFirstName" class="hidden" value="{{ order.firstname }}" hidden="">
+        <input type="text" name="clientLastName" id="clientLastName" class="hidden" value="{{ order.lastname }}" hidden="">
+        <input type="text" name="clientTelephone" id="clientTelephone" class="hidden" value="{{ order.telephone }}" hidden="">
+        <input type="text" name="clientEmail" id="clientEmail" class="hidden" value="{{ order.email }}" hidden="">
         
         <!-- Loan info fields -->
         <input type="text" name="loanAPR" id="loanAPR" class="hidden" value="51.12" hidden="">
@@ -87,7 +67,6 @@
     var loanFeeAmount = document.getElementById("loanFeeAmount");
     var loanDueDate = document.getElementById("loanDueDate");
 
-
     var slider = document.getElementById("myRange");
     var output = document.getElementById("installments-number");
     var output2 = document.getElementById("installments-number2");
@@ -98,69 +77,34 @@
     var infoDueDate = document.getElementById("info-due-date");
     var infoFeeAmount = document.getElementById("info-fee-amount");
 
-    var step3 = document.getElementById("step3data");
-    var step4 = document.getElementById("step4data");
-    var step5 = document.getElementById("step5data");
-    var step6 = document.getElementById("step6data");
-    var step7 = document.getElementById("step7data");
-    var step8 = document.getElementById("step8data");
-    var step9 = document.getElementById("step9data");
-    var step10 = document.getElementById("step10data");
-    var step11 = document.getElementById("step11data");
-    var step12 = document.getElementById("step12data");
-    var step13 = document.getElementById("step13data");
-    var step14 = document.getElementById("step14data");
-    var step15 = document.getElementById("step15data");
-    var step16 = document.getElementById("step16data");
-    var step17 = document.getElementById("step17data");
-    var step18 = document.getElementById("step18data");
-    var step19 = document.getElementById("step19data");
-    var step20 = document.getElementById("step20data");
-    var step21 = document.getElementById("step21data");
-    var step22 = document.getElementById("step22data");
-    var step23 = document.getElementById("step23data");
-    var step24 = document.getElementById("step24data");
+    var stepData = {};
+    var stepValues = {};
 
-    var step3value = jQuery.parseJSON(step3.value);
-    var step4value = jQuery.parseJSON(step4.value);
-    var step5value = jQuery.parseJSON(step5.value);
-    var step6value = jQuery.parseJSON(step6.value);
-    var step7value = jQuery.parseJSON(step7.value);
-    var step8value = jQuery.parseJSON(step8.value);
-    var step9value = jQuery.parseJSON(step9.value);
-    var step10value = jQuery.parseJSON(step10.value);
-    var step11value = jQuery.parseJSON(step11.value);
-    var step12value = jQuery.parseJSON(step12.value);
-    var step13value = jQuery.parseJSON(step13.value);
-    var step14value = jQuery.parseJSON(step14.value);
-    var step15value = jQuery.parseJSON(step15.value);
-    var step16value = jQuery.parseJSON(step16.value);
-    var step17value = jQuery.parseJSON(step17.value);
-    var step18value = jQuery.parseJSON(step18.value);
-    var step19value = jQuery.parseJSON(step19.value);
-    var step20value = jQuery.parseJSON(step20.value);
-    var step21value = jQuery.parseJSON(step21.value);
-    var step22value = jQuery.parseJSON(step22.value);
-    var step23value = jQuery.parseJSON(step23.value);
-    var step24value = jQuery.parseJSON(step24.value);
+    for (var i = 3; i <= 36; i++) {
+        var stepVal = 'step' + i + 'value';
+        var step = 'step' + i;
+        var el = document.getElementById(step + "data");
+        var val = el.value;
+        stepData[step] = el;
+        stepValues[stepVal] = jQuery.parseJSON(el.value);
+    }
 
-    // var dueDate = moment(window['step' + slider.value + 'value'].due_date).format('DD/MM/YYYY');
     var dueDate = moment().add(slider.value, 'months').format('DD/MM/YYYY');
         
     output.innerHTML = slider.value;
     output2.innerHTML = slider.value;
 
-    infoAprPercent.innerHTML = window['step' + slider.value + 'value'].apr + ' %'; 
-    infoApr.innerHTML = window['step' + slider.value + 'value'].fee_amount + ' мкд';
-    infoAmountToPay.innerHTML = window['step' + slider.value + 'value'].amount_to_pay + ' мкд';
+    infoAprPercent.innerHTML = stepValues['step' + slider.value + 'value'].apr + ' %'; 
+    infoApr.innerHTML = stepValues['step' + slider.value + 'value'].fee_amount + ' мкд';
+    infoAmountToPay.innerHTML = stepValues['step' + slider.value + 'value'].amount_to_pay + ' мкд';
     infoDueDate.innerHTML = dueDate;
-    infoFeeAmount.innerHTML = window['step' + slider.value + 'value'].installment_payment + ' мкд';
+    infoFeeAmount.innerHTML = stepValues['step' + slider.value + 'value'].installment_payment + ' мкд';
 
-    loanAPR.value = window['step' + slider.value + 'value'].apr + ' %';
-    loanAPRamount.value = window['step' + slider.value + 'value'].fee_amount + ' мкд';
-    loanAMTP.value = window['step' + slider.value + 'value'].amount_to_pay + ' мкд';
-    loanFeeAmount.value = window['step' + slider.value + 'value'].installment_payment + ' мкд';
-    loanDueDate.value = moment(window['step' + slider.value + 'value'].due_date).format('DD.MM.YYYY HH:mm:ss');
+    loanAPR.value = stepValues['step' + slider.value + 'value'].apr + ' %';
+    loanAPRamount.value = stepValues['step' + slider.value + 'value'].fee_amount + ' мкд';
+    loanAMTP.value = stepValues['step' + slider.value + 'value'].amount_to_pay + ' мкд';
+    loanFeeAmount.value = stepValues['step' + slider.value + 'value'].installment_payment + ' мкд';
+    loanDueDate.value = moment(stepValues['step' + slider.value + 'value'].due_date).format('DD.MM.YYYY HH:mm:ss');
 
     slider.oninput = function() {
         output.innerHTML = this.value;
@@ -168,16 +112,16 @@
 
         dueDate = moment().add(slider.value, 'months').format('DD/MM/YYYY');
 
-        infoAprPercent.innerHTML = window['step' + this.value + 'value'].apr + ' %';
-        infoApr.innerHTML = window['step' + this.value + 'value'].fee_amount + ' мкд';
-        infoAmountToPay.innerHTML = window['step' + this.value + 'value'].amount_to_pay + ' мкд';
+        infoAprPercent.innerHTML = stepValues['step' + this.value + 'value'].apr + ' %';
+        infoApr.innerHTML = stepValues['step' + this.value + 'value'].fee_amount + ' мкд';
+        infoAmountToPay.innerHTML = stepValues['step' + this.value + 'value'].amount_to_pay + ' мкд';
         infoDueDate.innerHTML = dueDate;
-        infoFeeAmount.innerHTML = window['step' + this.value + 'value'].installment_payment + ' мкд';
+        infoFeeAmount.innerHTML = stepValues['step' + this.value + 'value'].installment_payment + ' мкд';
 
-        loanAPR.value = window['step' + this.value + 'value'].apr + ' %';
-        loanAPRamount.value = window['step' + this.value + 'value'].fee_amount + ' мкд';
-        loanAMTP.value = window['step' + this.value + 'value'].amount_to_pay + ' мкд';
-        loanFeeAmount.value = window['step' + this.value + 'value'].installment_payment + ' мкд';
+        loanAPR.value = stepValues['step' + this.value + 'value'].apr + ' %';
+        loanAPRamount.value = stepValues['step' + this.value + 'value'].fee_amount + ' мкд';
+        loanAMTP.value = stepValues['step' + this.value + 'value'].amount_to_pay + ' мкд';
+        loanFeeAmount.value = stepValues['step' + this.value + 'value'].installment_payment + ' мкд';
         loanDueDate.value = moment().add(slider.value, 'months').format('DD.MM.YYYY HH:mm:ss');
     }
 </script>
