@@ -8,7 +8,9 @@ class ControllerExtensionPaymentKreddyPaymentGateway extends Controller
         
 		$total = trim($this->currency->format($order['total'], $this->config->get('config_currency')), ',денари');
         
-        //get total price in correct format
+        $data['total'] = $total;
+
+        //get total price in usable format
         if ($total) {
             $total = str_replace(',', '', $total);
             $total = intval($total);
@@ -62,7 +64,7 @@ class ControllerExtensionPaymentKreddyPaymentGateway extends Controller
         
         $installmentsArray = $this->getInstallments($valuesForOrder);
 
-        $data['total'] = $total;
+        
         $data['installments'] = $installmentsArray;
         $data['order'] = $order;
         $data['continue'] = $this->url->link('checkout/success');

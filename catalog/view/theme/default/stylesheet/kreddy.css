@@ -2,54 +2,38 @@
     font-family: 'Rubik', sans-serif;
     font-weight: 400;
 }
-#kreddycustomwrap .slider {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 15px;
-    border-radius: 5px;
-    background: #d3d3d3;
-    outline: none;
-    opacity: 1;
-    -webkit-transition: .2s;
-    transition: opacity .2s;
-}
 
-#kreddycustomwrap .slider:hover {
-    opacity: 1;
-}
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    input[type='range'] {
+        height: 10px;
+        width: 100%;
+        border-radius: 5px;
+        border: 1px solid #000;
+        outline: none;
+        -webkit-appearance: none;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+    }
 
-#kreddycustomwrap .slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 30px;
-    height: 30px;
-    margin-top: -10px;
-    border-radius: 50%;
-    background: white !important;
-    border-color: #32c8a0;
-    cursor: pointer;
-}
-
-#kreddycustomwrap .slider::-moz-range-thumb {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: white !important;
-    border-color: #32c8a0;
-    cursor: pointer;
-}
-
-div#kreddycalculator h2 {
-    color: white;
+    input[type='range']::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 1px solid #000;
+        background: #32c8a0;
+        cursor: pointer;
+    }
 }
 
 div#kreddycalculator {
+    display: inline-block;
     background-color: #0f3c64;
     color: white;
-    border-radius: 20px;
-    padding: 70px 35px;
-
-    width: 50%;
+    border-radius: 10px;
+    padding: 45px 35px;
+    margin-top: 5px;
+    width: 49%;
 }
 
 #kreddycalculator a {
@@ -58,6 +42,8 @@ div#kreddycalculator {
 
 #kreddycalculator input[type="submit"] {
     background-color: #32c8a0;
+    padding: 5px;
+    border-radius: 5px;
 }
 
 #kreddycalculator input[type="submit"]:hover {
@@ -65,14 +51,13 @@ div#kreddycalculator {
 }
 
 div#kreddycalculatorresults {
+    display: inline-block;
     border: 13px solid #0e3c64;
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
+    border-radius: 0px 15px 15px 0px;
     border-left: none;
     padding: 20px 20px;
-    /* margin-left: -3px; */
-
-    width: 50%;
+    margin-left: -3px;
+    width: 49%;
 }
 
 #kreddycalculatorresults ul {
@@ -103,7 +88,7 @@ div#kreddycustomwrap form {
 }
 
 div#kreddycustomwrap h2 span {
-    font-size: 27px;
+    font-size: 25px;
     font-weight: 500;
     float: right;
     margin-top: -10px;
@@ -114,7 +99,7 @@ div#kreddycustomwrap h2 span {
     font-weight: 400 !important;
 }
 
-.header-loan-amount {
+.header-loan-amount, .body-loan-number-of-installments {
     margin-bottom: 25px;
 }
 
@@ -127,22 +112,23 @@ div#kreddycustomwrap h2 span {
     margin-top: 14px;
 }
 
-.kreddy-submit input {
+#kreddycalculator input[type="text"] {
+    color: black;
+    border: 1px solid #000;
     border-radius: 5px;
     width: 100%;
+    padding: 5px;
 }
 
 div#kreddycalculator h2 {
     color: white;
     border-bottom: 1px dotted white;
+    border-color: lightblue;
+    font-size: 25px;
 }
 
 .txtinput input {
     width: 100%;
-}
-
-input[type="text"] {
-    border-radius: 6px !important;
 }
 
 .body-input-personal-id-document-no {
@@ -158,4 +144,13 @@ input[type="text"] {
 
 input.hidden {
     display: none !important;
+}
+
+#clientDocType {
+    color: black;
+    border: 1px solid #000;
+    border-radius: 5px;
+    background-color: white;
+    width: 30%;
+    padding: 5px;
 }
