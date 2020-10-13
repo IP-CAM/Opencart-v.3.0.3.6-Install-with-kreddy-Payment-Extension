@@ -1,6 +1,9 @@
 <?php
 class ControllerExtensionPaymentKreddyPaymentGateway extends Controller
 {
+    /**
+     * Accountable for calculating and parsing the necessary data using the helper methods for installment calculation using the Kreddy API
+     */
     public function index() {
         $this->load->model('checkout/order');
 
@@ -19,31 +22,9 @@ class ControllerExtensionPaymentKreddyPaymentGateway extends Controller
         //authorize current session
         $authorize = $this->authorize();
 
-        $authInfo = explode('GMT', $authorize);
-        
-        $cookiesObj = json_decode(end($authInfo));
-        $cookies = [];
-        
-        preg_match_all('/^Set-Cookie:\s*([^;\r\n]*)/mi', $authorize, $matches);
-
-        //set auth cookies
-        foreach($matches[1] as $item) {
-            parse_str($item, $cookie);
-            array_push($cookies, $cookie);
-        }
-        
-        $cookies = array_unique($cookies, SORT_REGULAR);
-
-        $cookieString = '';
-
-        if ($cookiesObj->Code == 0) {
-            foreach ($cookies as $cookie) {
-                $this->setAuthCookie($cookie);
-                $cookieString .= array_keys($cookie)[0] . "=" . array_values($cookie)[0] . '; ';
-            }
-        }
-
-        $cookieString = str_replace('_ASPXAUTH', '.ASPXAUTH', $cookieString);
+        $cookieString = $this->parseCookies($authorize);
+       
+        $this->setAuthCookie($this->parseCookies($authorize, true));
         
         $offers = $this->offerInfo($cookieString);
         
@@ -63,7 +44,6 @@ class ControllerExtensionPaymentKreddyPaymentGateway extends Controller
         }
         
         $installmentsArray = $this->getInstallments($valuesForOrder);
-
         
         $data['installments'] = $installmentsArray;
         $data['order'] = $order;
@@ -72,7 +52,25 @@ class ControllerExtensionPaymentKreddyPaymentGateway extends Controller
 		return $this->load->view('extension/payment/kreddy_payment_gateway', $data);
     }
     
+    /**
+     * Gets fired after payment form confirmation
+     */
     public function confirm() {
+        $formData = $_POST ? $_POST : null;
+        $parsedData = '';
+        $clientID = '';
+        $clientHasActiveLoan = 0;
+
+        if ($formData) {
+            $parsedData = $this->parseFormData($formData);
+        }
+        
+        if ($parsedData) {
+            if ($parsedData['agreement_checked'] == 1 && $parsedData['kreddy_form']['client_embg'] != '') {
+                $userCheck = $this->findKreddyUserByDocNum($parsedData['kreddy_form']['doc_type'], $parsedData['kreddy_form']['doc_number']);
+            }
+        }
+        print_r($userCheck);die();
 		if ($this->session->data['payment_method']['code'] == 'kreddy_payment_gateway') {
 			$this->load->model('checkout/order');
 
@@ -110,6 +108,43 @@ class ControllerExtensionPaymentKreddyPaymentGateway extends Controller
         curl_close($curl);
         
         return $result; 
+    }
+
+    /**
+     * Parse cookies into string or array
+     */
+    public function parseCookies($authorize, $array = false) {
+        $authInfo = explode('GMT', $authorize);
+        
+        $cookiesObj = json_decode(end($authInfo));
+        $cookies = [];
+        
+        preg_match_all('/^Set-Cookie:\s*([^;\r\n]*)/mi', $authorize, $matches);
+
+        //set auth cookies
+        foreach($matches[1] as $item) {
+            parse_str($item, $cookie);
+            array_push($cookies, $cookie);
+        }
+        
+        $cookies = array_unique($cookies, SORT_REGULAR);
+
+        //return cookies in array form
+        if ($array && $array != false) {
+            return $cookies;
+        }
+
+        $cookieString = '';
+
+        if ($cookiesObj->Code == 0) {
+            foreach ($cookies as $cookie) {
+                $cookieString .= array_keys($cookie)[0] . "=" . array_values($cookie)[0] . '; ';
+            }
+        }
+
+        $cookieString = str_replace('_ASPXAUTH', '.ASPXAUTH', $cookieString);
+
+        return $cookieString;
     }
 
     /**
@@ -317,6 +352,9 @@ class ControllerExtensionPaymentKreddyPaymentGateway extends Controller
         return $atpRecalculated;
     }   
 
+    /**
+     * Parses the data into implementable array
+     */
     public function getInstallments(array $values) : array
     {
         $counter = 3;
@@ -341,5 +379,120 @@ class ControllerExtensionPaymentKreddyPaymentGateway extends Controller
         }
 
         return $installments;
+    }
+
+    /**
+     * Parses the received form data into an array
+     */
+    public function parseFormData($formData) {
+        //client billing data
+        $clientFirstName = isset($formData['clientFirstName']) ? $formData['clientFirstName'] : '';
+        $clientLastName = isset($formData['clientLastName']) ? $formData['clientLastName'] : '';
+        $clientTelephone = isset($formData['clientTelephone']) ? $formData['clientTelephone'] : '';
+        $clientEmail = isset($formData['clientEmail']) ? $formData['clientEmail'] : '';
+        $clientEMBG = isset($formData['clientEmbg']) ? $formData['clientEmbg'] : '';
+
+        //client passport or ID card info (0 = ID card, 1 = Passport)
+        $clientDocType = isset($formData['clientDocType']) ? $formData['clientDocType'] : 0;
+        $clientDocNumber = isset($formData['clientDocNumber']) ? $formData['clientDocNumber'] : '';
+
+        //kreddy specific for client
+        $clientCheckedAgreement = isset($formData['kreddy-agreement']) ? true : false;
+
+        //client loan info
+        $loanAPR = isset($formData['loanAPR']) ? $formData['loanAPR'] : 0;
+        $loanAPRamount = isset($formData['loanAPRamount']) ? trim(str_replace('MKD', '', $formData['loanAPRamount'])) : 0;
+        $loanAMTP = isset($formData['loanAMTP']) ? trim(str_replace('MKD', '', $formData['loanAMTP'])) : 0;
+        $loanFeeAmount = isset($formData['loanFeeAmount']) ? trim(str_replace('MKD', '', $formData['loanFeeAmount'])) : 0;
+        $loanDueDate = isset($formData['loanDueDate']) ? $formData['loanDueDate'] : 0;
+        $nOfInstallments = isset($formData['installments']) ? $formData['installments'] : 3;
+
+        //order info
+        $orderNum = isset($formData['kreddyOrderNumber']) ? $formData['kreddyOrderNumber'] : 0;
+        $order = $this->getOrder($orderNum);
+        $orderTotal = trim($this->currency->format($order['total'], $this->config->get('config_currency')), ',денари');
+        $clientIP = $order['ip'];
+        
+        $parsedInfo = [
+            'agreement_checked' => $clientCheckedAgreement,
+            'client' => [
+                'first_name' => $clientFirstName,
+                'last_name' => $clientLastName,
+                'phone' => $clientTelephone,
+                'email' => $clientEmail,
+                'ip_address' => $clientIP
+            ],
+            'kreddy_form' => [
+                'client_embg' => $clientEMBG,
+                'doc_type' => $clientDocType,
+                'doc_number' => $clientDocNumber,
+            ],
+            'loan_info' => [
+                'asked_amount' => $orderTotal,
+                'amount_to_pay' => $loanAMTP,
+                'apr' => $loanAPR,
+                'apr_amount' => $loanAPRamount,
+                'fee' => $loanFeeAmount,
+                'installments' => $nOfInstallments,
+                'due_date' => $loanDueDate,
+            ]
+        ];
+
+        return $parsedInfo;
+    }
+
+    /**
+     * Retrieve order by id
+     */
+    public function getOrder($orderNum) {
+        $this->load->model('checkout/order');
+
+        $order = $this->model_checkout_order->getOrder($orderNum);
+        
+        return $order;
+    }
+
+    /**
+     * Searches for possible existing user in the kreddy records
+     */
+    public function findKreddyUserByDocNum($docType, $docNumber) {
+        $docTypeID = '';
+
+        if ($docType == 0){
+            // ID card
+            $docTypeID = '1188b317-4229-4c67-8d20-19048e279aac';
+        } else {
+            // Passport
+            $docTypeID = 'BDC463D4-FE42-406A-A3D8-C87320E3536C';
+        }
+
+        //get cookies in string format
+        $cookies = $this->parseCookies($this->authorize());
+        
+        //API call
+        $url = 'https://88.85.110.253/0/rest/FinstarClientAPI/clients?DocTypeID='.$docTypeID.'&DocNumber='.$docNumber;
+            
+        $curl = curl_init($url);
+        
+        curl_setopt($curl, CURLOPT_COOKIE, $cookies);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_VERBOSE, true);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        $result = curl_exec($curl);
+
+        curl_close($curl);
+
+        $response = json_decode($result, true);
+        
+        if (!empty($response['ClientListResult']['ResponseObject'])) {
+            return [
+                'id' => $response['ClientListResult']['ResponseObject'][0]['ClientID'],
+                'activeLoan' => $response['ClientListResult']['ResponseObject'][0]['ActiveLoan'] == '' ? 0 : 1
+            ];
+        }
+
+        return false;
     }
 }
